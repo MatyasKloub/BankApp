@@ -1,4 +1,4 @@
-﻿using Bank.Core.Authorization;
+﻿using Bank.Core.Database;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bank.Controllers
@@ -12,7 +12,7 @@ namespace Bank.Controllers
         [HttpPost]
         [Consumes("application/json")]
         [Route("/loginAuth")]
-        public IActionResult Authorization([FromBody] AuthObject auth)
+        public IActionResult Authorization([FromBody] User user)
         {
             return Ok();
         }
