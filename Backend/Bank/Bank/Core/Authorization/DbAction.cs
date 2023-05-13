@@ -6,22 +6,43 @@ namespace Bank.Core.Authorization
     {
         public static bool CreateUser(User user)
         {
-
-
-
-
-
+            if (!userExists(user.Email))
+            {
+                 using (var db = new MyDbContext())
+                {
+                    db.Users.Add(user);
+                    db.SaveChanges();
+                }
+                 return true;
+            }
             return false;
         }
 
-        private static bool userExists(string name)
+        private static bool userExists(string email)
         {
             using (var context = new MyDbContext())
             {
-                var user = context.Users.FirstOrDefault(u => u.Name == name);
+                var user = context.Users.FirstOrDefault(u => u.Email == email);
                 return user != null;
             }
         }
 
+        public static bool UserExistsAndRight(User user)
+        {
+            using (var context = new MyDbContext())
+            {
+                var us = context.Users.FirstOrDefault(u => u.Email == user.Email);
+
+                if (us != null)
+                {
+                    if (us.Password == user.Password)
+                    {
+                        return true;
+                    }
+                    else return false;
+                }
+                else return false; 
+            }
+        }
     }
 }

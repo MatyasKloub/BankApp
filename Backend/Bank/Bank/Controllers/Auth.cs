@@ -1,4 +1,5 @@
-﻿using Bank.Core.Database;
+﻿using Bank.Core.Authorization;
+using Bank.Core.Database;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bank.Controllers
@@ -12,9 +13,30 @@ namespace Bank.Controllers
         [HttpPost]
         [Consumes("application/json")]
         [Route("/loginAuth")]
-        public IActionResult Authorization([FromBody] User user)
+        public IActionResult LoginAuthorization([FromBody] User user)
         {
-            return Ok();
+            if (DbAction.UserExistsAndRight(user))
+            {
+                return Ok();
+            }
+            else return BadRequest("Username or Password not right");
         }
+
+
+        [HttpPost]
+        [Consumes("application/json")]
+        [Route("/registerAttempt")]
+        public IActionResult RegisterAttempt([FromBody] User user)
+        {
+            if (DbAction.CreateUser(user))
+            {
+                return Ok();
+            }
+            else return BadRequest("Email already exists");
+
+        }
+
+        
+
     }
 }
