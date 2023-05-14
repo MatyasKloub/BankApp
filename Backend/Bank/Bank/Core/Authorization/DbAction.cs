@@ -1,4 +1,5 @@
 ﻿using Bank.Core.Database;
+using Newtonsoft.Json;
 
 namespace Bank.Core.Authorization
 {
@@ -43,6 +44,29 @@ namespace Bank.Core.Authorization
                 }
                 else return false; 
             }
+        }
+        
+        public static string ReturnUserData(User user)
+        {
+            User uz = new User("non", "non", user.Email);
+
+            using (var context = new MyDbContext())
+            {
+                var us = context.Users.FirstOrDefault(u => u.Email == user.Email);
+
+                if (us != null)
+                {
+                    uz.Name = us.Name;
+
+
+                    string json = JsonConvert.SerializeObject(uz);
+
+                    return json;
+                
+                }
+                else return null;
+            }
+           
         }
     }
 }

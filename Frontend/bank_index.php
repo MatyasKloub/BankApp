@@ -1,7 +1,12 @@
 <?php
     session_start();
 
-    session_destroy();
+    if (!isset($_SESSION['name']))
+    {
+        header("Location: index.php");
+        exit();
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -16,14 +21,12 @@
         <title>Gold Bank</title>
     </head>
     <body>
+        <h1>Vítej <?php echo $_SESSION['name']; ?></h1>
 
-    <form action="register.php">
-        <input type="submit" value="Register" />
-    </form>
+        <div>
+            
+        </div>
 
-    <form action="login.php">
-        <input type="submit" value="Login" />
-    </form>
 
     </body>
 </html>
