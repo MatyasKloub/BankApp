@@ -33,10 +33,24 @@ namespace Bank.Controllers
                 return Ok();
             }
             else return BadRequest("Email already exists");
-
         }
 
-        
+        [HttpPost]
+        [Consumes("application/json")]
+        [Route("/loginAttempt")]
+        [Produces("application/json")]
+        public IActionResult LoginAttempt([FromBody] User user)
+        {
+            string str = DbAction.ReturnUserData(user);
 
+            if (str == null)
+            {
+                return BadRequest("User is null!");
+            }
+            else
+            {
+                return Ok(str);
+            }
+        }
     }
 }

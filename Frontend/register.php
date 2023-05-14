@@ -1,7 +1,5 @@
 <?php
     session_start();
-
-    session_destroy();
 ?>
 
 <!DOCTYPE html>
@@ -16,14 +14,25 @@
         <title>Gold Bank</title>
     </head>
     <body>
+        <h1>Hello</h1>
 
-    <form action="register.php">
-        <input type="submit" value="Register" />
-    </form>
-
-    <form action="login.php">
-        <input type="submit" value="Login" />
-    </form>
+        <form action="action/register_data_auth.php" method="POST">
+            <label for="nname">Name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email"><br><br>
+            <label for="ps">Password:</label><br>
+            <input type="password" id="ps" name="ps"><br><br>
+            <label for="psa">Password again:</label><br>
+            <input type="password" id="psa" name="psa"><br><br>
+            <input type="submit" value="Submit">
+        </form> 
+        <?php
+            if (isset($_SESSION['error'])) {
+                echo $_SESSION['error'];
+            }
+            session_destroy();
+        ?>
 
     </body>
 </html>
