@@ -20,9 +20,6 @@ namespace Bank.Controllers
             {
                 return BadRequest("Problem sending email");
             }
-
-
-            
         }
     }
 }
