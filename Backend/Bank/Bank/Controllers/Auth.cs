@@ -15,7 +15,7 @@ namespace Bank.Controllers
         [Route("/loginAuth")]
         public IActionResult LoginAuthorization([FromBody] User user)
         {
-            if (DbAction.UserExistsAndRight(user))
+            if (DbAction.UserExistsAndRight(user, null))
             {
                 return Ok();
             }
@@ -28,11 +28,12 @@ namespace Bank.Controllers
         [Route("/registerAttempt")]
         public IActionResult RegisterAttempt([FromBody] User user)
         {
-            if (DbAction.CreateUser(user))
-            {
-                return Ok();
-            }
-            else return BadRequest("Email already exists");
+             if (DbAction.CreateUser(user, null))
+             {
+                 return Ok();
+             }
+             else return BadRequest("Email already exists");
+            return Ok();
         }
 
         [HttpPost]
@@ -41,7 +42,9 @@ namespace Bank.Controllers
         [Produces("application/json")]
         public IActionResult LoginAttempt([FromBody] User user)
         {
-            string str = DbAction.ReturnUserData(user);
+           
+
+            string str = DbAction.ReturnUserData(user, null);
 
             if (str == null)
             {

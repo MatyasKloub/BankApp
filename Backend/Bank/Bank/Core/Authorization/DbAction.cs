@@ -1,43 +1,55 @@
 ﻿using Bank.Core.Database;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Bank.Core.Authorization
 {
     public static class DbAction
     {
-        public static bool CreateUser(User user)
+        private static DbContextOptions<MyDbContext> options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=mydatabase.db").Options;
+        public static bool CreateUser(User user, DbContextOptions<MyDbContext> customOptions)
         {
-            if (!userExists(user.Email))
+            if (customOptions == null)
             {
-                using (var db = new MyDbContext())
+                customOptions = options;
+            }
+
+            if (!userExists(user.Email, customOptions))
+            {
+                using (var db = new MyDbContext(customOptions))
                 {
                    db.Users.Add(user);
                    db.SaveChanges();
                 }
 
-                User usertemp = ReturnUserDataObj(user.Email);
-                CreateUcet(usertemp.Id, "CZK", "10000.00");
-                CreateUcet(usertemp.Id, "USD", "10000.00");
-                CreateUcet(usertemp.Id, "AUD", "10000.00");
-                CreateUcet(usertemp.Id, "CAD", "10000.00");
+                User usertemp = ReturnUserDataObj(user.Email, customOptions);
+                CreateUcet(usertemp.Id, "CZK", "10000.00", customOptions);
+                CreateUcet(usertemp.Id, "USD", "10000.00", customOptions);
+                CreateUcet(usertemp.Id, "AUD", "10000.00", customOptions);
+                CreateUcet(usertemp.Id, "CAD", "10000.00", customOptions);
                 
                 return true;
             }
             return false;
         }
 
-        private static bool userExists(string email)
+        public static bool userExists(string email, DbContextOptions<MyDbContext> customOptions)
         {
-            using (var context = new MyDbContext())
+            using (var context = new MyDbContext(customOptions))
             {
                 var user = context.Users.FirstOrDefault(u => u.Email == email);
                 return user != null;
             }
         }
 
-        public static bool UserExistsAndRight(User user)
+        public static bool UserExistsAndRight(User user, DbContextOptions<MyDbContext> customOptions)
         {
-            using (var context = new MyDbContext())
+            if (customOptions == null)
+            {
+                customOptions = options;
+            }
+
+            using (var context = new MyDbContext(customOptions))
             {
                 var us = context.Users.FirstOrDefault(u => u.Email == user.Email);
 
@@ -53,11 +65,19 @@ namespace Bank.Core.Authorization
             }
         }
         
-        public static string ReturnUserData(User user)
+        public static string ReturnUserData(User user, DbContextOptions<MyDbContext> customOptions)
         {
             User uz = new User("non", "non", user.Email);
 
-            using (var context = new MyDbContext())
+            if (customOptions == null)
+            {
+                customOptions = options;
+            }
+            if (customOptions == null)
+            {
+                customOptions = options;
+            }    
+            using (var context = new MyDbContext(customOptions))
             {
                 var us = context.Users.FirstOrDefault(u => u.Email == user.Email);
 
@@ -74,9 +94,10 @@ namespace Bank.Core.Authorization
             }
            
         }
-        public static User ReturnUserDataObj(string email)
+        public static User ReturnUserDataObj(string email, DbContextOptions<MyDbContext> customOptions)
         {
-            using (var context = new MyDbContext())
+            
+            using (var context = new MyDbContext(customOptions))
             {
                 var us = context.Users.FirstOrDefault(u => u.Email == email);
 
@@ -88,26 +109,26 @@ namespace Bank.Core.Authorization
                 else return null;
             }
         }
-        public static bool CreateUcet(int? uid, string mena, string val)
+        public static bool CreateUcet(int? uid, string mena, string val, DbContextOptions<MyDbContext> customOptions)
         {
-            using (var db = new MyDbContext())
+            if (customOptions == null)
             {
-                try
-                {
-                    db.Ucty.Add(new Ucet(uid, mena, val));
-                    db.SaveChanges();
-                    return true;
-                }
-                catch (Exception)
-                {
-
-                    return false;
-                }                
+                customOptions = options;
+            }
+            using (var db = new MyDbContext(customOptions))
+            {
+                db.Ucty.Add(new Ucet(uid, mena, val));
+                db.SaveChanges();
+                return true;
             }
         }
-        public static string GetUcty(string email)
+        public static string GetUcty(string email, DbContextOptions<MyDbContext> customOptions)
         {
-            using (var context = new MyDbContext())
+            if (customOptions == null)
+            {
+                customOptions = options;
+            }
+            using (var context = new MyDbContext(customOptions))
             {
                 var user = context.Users.FirstOrDefault(u =>u.Email == email);
                 if (user == null)
@@ -132,9 +153,13 @@ namespace Bank.Core.Authorization
                 else return null;
             }
         }
-        public static List<Ucet> GetUctyObj(string email)
+        public static List<Ucet> GetUctyObj(string email, DbContextOptions<MyDbContext> customOptions)
         {
-            using (var context = new MyDbContext())
+            if (customOptions == null)
+            {
+                customOptions=options;
+            }
+            using (var context = new MyDbContext(customOptions))
             {
                 var user = context.Users.FirstOrDefault(u => u.Email == email);
                 if (user == null)
@@ -222,14 +247,18 @@ namespace Bank.Core.Authorization
             }
             catch (Exception ex)
             {
-                return new Kurz(ex.Message, 2.01f);
-                Console.WriteLine($"An error occurred in getKurz(): {ex.Message}");
+                return null;
             }
         }
 
-        private static bool isPaymentPossible(string zkratka, int value, string email)
+        public static bool isPaymentPossible(string zkratka, int value, string email, DbContextOptions<MyDbContext> customOptions)
         {
-            List<Ucet>ucty = DbAction.GetUctyObj(email);
+            if (customOptions == null)
+            {
+                customOptions = options;
+            }
+
+            List<Ucet>ucty = DbAction.GetUctyObj(email, customOptions);
             if (ucty == null)
             {
                 return false;
@@ -255,25 +284,41 @@ namespace Bank.Core.Authorization
 
             float hodnota_korun = float.Parse(ucet.Count);
 
-            if (hodnota_korun >= value*kurz.Hodnota)
+            // CZK
+            if (kurz == null && zkratka == "CZK")
             {
-                return true;
+                if (hodnota_korun >= value)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (hodnota_korun >= value*kurz.Hodnota)
+                {
+                    return true;
+                }
             }
             return false;
 
         }
-        public static bool doPayment(string zkratka, int value, string email, string typ)
+        
+        public static bool doPayment(string zkratka, int value, string email, string typ, DbContextOptions<MyDbContext> customOptions)
         {
+            if (customOptions == null)
+            {
+                customOptions = options;
+            }
             Kurz kurz = GetKurz(zkratka);
             if (typ == "prichozi")
             {
-                List<Ucet> ucty = GetUctyObj(email);
+                List<Ucet> ucty = GetUctyObj(email, customOptions);
 
                 foreach (var item in ucty)
                 {
                     if (item.Mena == zkratka)
                     {
-                        using (var context = new MyDbContext())
+                        using (var context = new MyDbContext(customOptions))
                         {
                             var ucet = context.Ucty.FirstOrDefault(u => u.Id == item.Id);
 
@@ -285,14 +330,14 @@ namespace Bank.Core.Authorization
                                 
                                 context.SaveChanges();
 
-                                createPlatba(email, value, zkratka, typ);
+                                createPlatba(email, value, zkratka, typ, customOptions);
                                 return true;
                             }
                             else return false;
                         }
                     }   
                 }
-                using (var context = new MyDbContext())
+                using (var context = new MyDbContext(customOptions))
                 {
                     foreach (var item in ucty)
                     {
@@ -304,7 +349,7 @@ namespace Bank.Core.Authorization
                             
                             
                             context.SaveChanges();
-                            createPlatba(email, value, zkratka, typ);
+                            createPlatba(email, value, zkratka, typ, customOptions);
                             return true;
                         }
                     }
@@ -312,9 +357,9 @@ namespace Bank.Core.Authorization
 
                 return true;
             }
-            if (isPaymentPossible(zkratka, value, email))
+            if (isPaymentPossible(zkratka, value, email, customOptions))
             {
-                List<Ucet> ucty = DbAction.GetUctyObj(email);
+                List<Ucet> ucty = DbAction.GetUctyObj(email, customOptions);
                 if (ucty == null)
                 {
                     return false;
@@ -326,12 +371,12 @@ namespace Bank.Core.Authorization
                     {
                         if (float.Parse(item.Count) >= value)
                         {
-                            using (var context = new MyDbContext())
+                            using (var context = new MyDbContext(customOptions))
                             {
                                 try
                                 {
-                                    // Retrieve the user entity with ID 8
-                                    var uc = context.Ucty.FirstOrDefault(u => u.UserId == ReturnUserDataObj(email).Id && u.Mena == zkratka);
+                                    
+                                    var uc = context.Ucty.FirstOrDefault(u => u.UserId == ReturnUserDataObj(email, customOptions).Id && u.Mena == zkratka);
 
                                     if (uc != null)
                                     {
@@ -343,7 +388,7 @@ namespace Bank.Core.Authorization
                                         
                                         // Save the changes to the database
                                         context.SaveChanges();
-                                        createPlatba(email, value, zkratka, typ);
+                                        createPlatba(email, value, zkratka, typ, customOptions);
                                         return true;
                                     }
                                 }
@@ -363,12 +408,11 @@ namespace Bank.Core.Authorization
                 }
                 float hodnota_korun = float.Parse(ucet.Count);
                 float? hodnota_v_korunach = value * kurz.Hodnota;
-                using (var context = new MyDbContext())
+                using (var context = new MyDbContext(customOptions))
                 {
                     try
                     {
-                        // Retrieve the user entity with ID 8
-                        var uc = context.Ucty.FirstOrDefault(u => u.UserId == ReturnUserDataObj(email).Id && u.Mena == "CZK");
+                        var uc = context.Ucty.FirstOrDefault(u => u.UserId == ReturnUserDataObj(email, customOptions).Id && u.Mena == "CZK");
 
                         if (uc != null)
                         {
@@ -376,7 +420,7 @@ namespace Bank.Core.Authorization
                             float zaokrouhleno = (float)Math.Round(fin, 2);
                             uc.Count = zaokrouhleno.ToString();
 
-                            createPlatba(email, value, zkratka, typ);
+                            createPlatba(email, value, zkratka, typ, customOptions);
                             // Save the changes to the database
                             context.SaveChanges();
                             return true;
@@ -389,12 +433,17 @@ namespace Bank.Core.Authorization
                     }
 
                 }
-                return false;
             }
             return false;
         }
-        public static bool createPlatba(string email, int value, string zkratka, string typ)
+        public static bool createPlatba(string email, int value, string zkratka, string typ, DbContextOptions<MyDbContext> customOptions)
         {
+            if (customOptions == null)
+            {
+                customOptions = options;
+            }
+
+
             string add = "+";
 
             if (typ == "odchozi")
@@ -402,31 +451,40 @@ namespace Bank.Core.Authorization
                 add = "-";
             }
 
-            User usertemp = ReturnUserDataObj(email);
-            using (var db = new MyDbContext())
+            User usertemp = ReturnUserDataObj(email, customOptions);
+            using (var db = new MyDbContext(customOptions))
             {
                 Platba platba = new Platba((int)usertemp.Id, zkratka, add + value.ToString());
                 db.Platba.Add(platba);
                 db.SaveChanges();
+                
             }
-
             return true;
         }
-        public static string getPlatby(string email)
+        public static string getPlatby(string email, DbContextOptions<MyDbContext> customOptions)
         {
-            User user = ReturnUserDataObj(email);
-            string returnal = "Provedené platby na účtu:<br>";
-            using (var context = new MyDbContext())
+            if (customOptions == null)
             {
-                var platby = context.Platba.Where(u => u.from == user.Id);
-                if (platby != null)
+                customOptions = options;
+            }
+            User user = ReturnUserDataObj(email, customOptions);
+            string returnal = "Provedené platby na účtu:<br>";
+            using (var context = new MyDbContext(customOptions))
+            {
+                try
                 {
+                    var platby = context.Platba.Where(u => u.from == user.Id);
                     foreach (var item in platby)
                     {
                         returnal += "<p>ID platby: " + item.Id + ", platba:  " + item.Value + item.Currency + "</p>";
                     }
+                    return returnal;
                 }
-                return returnal;
+                catch (Exception)
+                {
+                    return null;
+                    
+                }  
             }
         }
     }

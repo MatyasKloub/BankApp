@@ -11,7 +11,7 @@ namespace Bank.Controllers
         [Route("/getUcty")]
         public IActionResult getUcty([FromQuery] string email)
         {
-            string returnal = DbAction.GetUcty(email);
+            string returnal = DbAction.GetUcty(email, null);
 
             if (returnal != null)
             {
@@ -53,7 +53,7 @@ namespace Bank.Controllers
                 return BadRequest("Wrong key");
             }
 
-            if (DbAction.doPayment(zkratka,value,email,type))
+            if (DbAction.doPayment(zkratka,value,email,type, null))
             {
                 return Ok("Vše ok!");
             }
@@ -68,7 +68,7 @@ namespace Bank.Controllers
             {
                 return BadRequest("Wrong key");
             }
-            return Ok(DbAction.getPlatby(email));
+            return Ok(DbAction.getPlatby(email, null));
 
 
         }

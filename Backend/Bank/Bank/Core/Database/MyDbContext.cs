@@ -7,15 +7,13 @@ namespace Bank.Core.Database
     public class MyDbContext : DbContext
     {
 
+        public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
+        { }
+
         public DbSet<User>? Users { get; set; }
         public DbSet<Platba>? Platba { get; set; }
         public DbSet<Ucet>? Ucty { get; set; }
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=mydatabase.db");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
