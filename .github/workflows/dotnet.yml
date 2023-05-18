@@ -29,4 +29,3 @@ jobs:
     - name: Test
       working-directory: Backend/Bank/BankTest
       run: dotnet test --no-build --verbosity normal
-  
