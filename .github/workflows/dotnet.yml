@@ -32,7 +32,7 @@ jobs:
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
     - name: Generate code coverage report
-      run: dotnet tool run reportgenerator -reports:/home/runner/work/BankApp/BankApp/Backend/Bank/BankTest/TestResults/0faea531-2f46-4846-b9cd-1152377227d7/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:HtmlInline;HtmlChart 
+      run: reportgenerator -reports:/home/runner/work/BankApp/BankApp/Backend/Bank/BankTest/TestResults/0faea531-2f46-4846-b9cd-1152377227d7/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:HtmlInline;HtmlChart 
       working-directory: Backend/Bank/BankTest/
     - name: Publish coverage report
       run: reportgenerator "-reports:Backend/Bank/BankTest/TestResults/coverage.cobertura.xml" "-targetdir:coveragereport" "-reporttypes:HtmlInline;HtmlChart"
