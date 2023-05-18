@@ -34,7 +34,7 @@ jobs:
     - name: Run tests and generate code coverage
       run: | 
         dotnet test Backend/Bank/BankTest/ --logger "trx;LogFileName=testresults.trx" --collect:"XPlat Code Coverage"
-        reportgenerator "-reports:Backend/Bank/BankTest/TestResults/coverage.cobertura.xml" "-targetdir:coveragereport" "-reporttypes:HtmlInline;HtmlChart"
+        reportgenerator "-reports:http://bankapp/Backend/Bank/BankTest/TestResults/407b32f8-d24e-43a6-b36a-addea90dbcf4/coverage.cobertura.xml" "-targetdir:coveragereport" "-reporttypes:HtmlInline;HtmlChart"
         working-directory: Backend/Bank/BankTest/
     - name: Publish coverage report
       run: reportgenerator "-reports:Backend/Bank/BankTest/TestResults/coverage.cobertura.xml" "-targetdir:coveragereport" "-reporttypes:HtmlInline;HtmlChart"
