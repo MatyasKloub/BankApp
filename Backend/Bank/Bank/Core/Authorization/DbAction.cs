@@ -7,13 +7,15 @@ namespace Bank.Core.Authorization
     public static class DbAction
     {
         private static DbContextOptions<MyDbContext> options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=mydatabase.db").Options;
+        private static MyDbContext context = new MyDbContext(options);
+        
         public static bool CreateUser(User user, DbContextOptions<MyDbContext> customOptions)
         {
             if (customOptions == null)
             {
                 customOptions = options;
             }
-
+            context.CreateDatabaseAndTables();
             if (!userExists(user.Email, customOptions))
             {
                 using (var db = new MyDbContext(customOptions))
@@ -35,6 +37,7 @@ namespace Bank.Core.Authorization
 
         public static bool userExists(string email, DbContextOptions<MyDbContext> customOptions)
         {
+            context.CreateDatabaseAndTables();
             using (var context = new MyDbContext(customOptions))
             {
                 var user = context.Users.FirstOrDefault(u => u.Email == email);
@@ -44,6 +47,7 @@ namespace Bank.Core.Authorization
 
         public static bool UserExistsAndRight(User user, DbContextOptions<MyDbContext> customOptions)
         {
+            context.CreateDatabaseAndTables();
             if (customOptions == null)
             {
                 customOptions = options;

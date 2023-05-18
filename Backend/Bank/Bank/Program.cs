@@ -1,3 +1,6 @@
+using Bank.Core.Database;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+//var connectionsString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+//builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlite(connectionsString, ServerVersion.AutoDetect(connectionsString)));
+
 
 var app = builder.Build();
 
