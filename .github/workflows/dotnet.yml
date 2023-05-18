@@ -29,4 +29,11 @@ jobs:
     - name: Test
       working-directory: Backend/Bank/BankTest
       run: dotnet test --no-build --verbosity normal
+    - name: SET VSTest and add to Path
+      uses: darenm/Setup-VSTest@v1
+      id: setup_vstest
+    - name: Run VSTest
+      id: run_vstest
+      working-directory: Backend/Bank
+      run: vstest.console.exe /Platform:x64 /Settings:CoverageNoParallel1.runsettings D:\a\BankApp\BankApp\Backend\Bank\BankTest
   
