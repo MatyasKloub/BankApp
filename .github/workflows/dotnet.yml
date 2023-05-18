@@ -31,3 +31,8 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Generate code coverage report
       run: dotnet test Backend/Bank/BankTest --collect:"XPlat Code Coverage"
+    - name: Upload code coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage
+        path: TestResults/*.json
