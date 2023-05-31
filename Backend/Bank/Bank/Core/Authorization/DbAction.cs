@@ -411,7 +411,7 @@ namespace Bank.Core.Authorization
                         ucet.Count = item.Count;
                     }
                 }
-                float hodnota_korun = float.Parse(ucet.Count)*1.1f;
+                float hodnota_korun = float.Parse(ucet.Count);
                 float? hodnota_v_korunach = value * kurz.Hodnota;
                 using (var context = new MyDbContext(customOptions))
                 {

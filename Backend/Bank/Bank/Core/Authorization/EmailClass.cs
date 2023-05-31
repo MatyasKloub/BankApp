@@ -13,7 +13,7 @@ namespace Bank.Core.Authorization
             string folderPath = AppContext.BaseDirectory;
             string[] files = Directory.GetFiles(folderPath);
 
-            //string filePath = "./email.txt";
+            //string filePath = "email.txt";
             string filePath = Path.Combine(AppContext.BaseDirectory, "email.txt");
             string[] lines = File.ReadAllLines(filePath);
 
