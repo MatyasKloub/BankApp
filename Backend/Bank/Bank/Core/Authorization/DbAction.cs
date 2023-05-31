@@ -440,6 +440,7 @@ namespace Bank.Core.Authorization
 
                 }
             }
+            Console.WriteLine("chyba!");
             return false;
         }
         public static bool createPlatba(string email, int value, string zkratka, string typ, DbContextOptions<MyDbContext> customOptions)

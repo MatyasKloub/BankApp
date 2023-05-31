@@ -209,6 +209,8 @@ public class Tests
     public void isPaymentPossibleTest()
     {
         var options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=testDatabase.db").Options;
+        var addMoney = DbAction.doPayment("CZK", 300, "maty.kloub@gmail.com", "prichozi", options);
+
         var result = DbAction.isPaymentPossible("EUR",10,"maty.kloub@gmail.com", options);
 
         Assert.IsTrue(result);
@@ -254,6 +256,7 @@ public class Tests
     public void doPaymentOdchoziTest()
     {
         var options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=testDatabase.db").Options;
+        var addMoney = DbAction.doPayment("EUR", 30, "maty.kloub@gmail.com", "prichozi", options);
         var result = DbAction.doPayment("EUR", 10, "maty.kloub@gmail.com", "odchozi", options);
 
         Assert.IsTrue(result);
@@ -299,6 +302,8 @@ public class Tests
     public void doPaymentKontokorentCiziMena()
     {
         var options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=testDatabase.db").Options;
+        var addMoney = DbAction.doPayment("EUR", 39, "maty.kloub@gmail.com", "prichozi", options);
+
         var result = DbAction.doPayment("EUR", 40, "maty.kloub@gmail.com", "odchozi", options);
 
         Assert.IsTrue(result);
