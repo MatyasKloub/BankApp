@@ -373,7 +373,7 @@ namespace Bank.Core.Authorization
                 {
                     if (item.Mena == zkratka)
                     {
-                        if (float.Parse(item.Count) >= value)
+                        if (float.Parse(item.Count)*1.1f >= value)
                         {
                             using (var context = new MyDbContext(customOptions))
                             {
@@ -410,7 +410,7 @@ namespace Bank.Core.Authorization
                         ucet.Count = item.Count;
                     }
                 }
-                float hodnota_korun = float.Parse(ucet.Count);
+                float hodnota_korun = float.Parse(ucet.Count)*1.1f;
                 float? hodnota_v_korunach = value * kurz.Hodnota;
                 using (var context = new MyDbContext(customOptions))
                 {
