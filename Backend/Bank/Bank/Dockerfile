@@ -19,4 +19,7 @@ RUN dotnet publish "Bank.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+COPY email.txt email.txt . 
+
 ENTRYPOINT ["dotnet", "Bank.dll"]

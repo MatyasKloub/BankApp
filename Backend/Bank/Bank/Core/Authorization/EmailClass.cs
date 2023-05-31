@@ -11,15 +11,7 @@ namespace Bank.Core.Authorization
         public void setClass()
         {
             string folderPath = AppContext.BaseDirectory;
-            string[] files = Directory.GetFiles(folderPath + "/Bank");
-
-            Console.WriteLine("Files in folder:");
-            foreach (string file in files)
-            {
-                Console.WriteLine(file);
-            }
-
-
+            string[] files = Directory.GetFiles(folderPath);
 
             //string filePath = "./email.txt";
             string filePath = Path.Combine(AppContext.BaseDirectory, "email.txt");
