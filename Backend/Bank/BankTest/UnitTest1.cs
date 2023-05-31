@@ -209,7 +209,7 @@ public class Tests
     public void isPaymentPossibleTest()
     {
         var options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=testDatabase.db").Options;
-        var result = DbAction.isPaymentPossible("EUR",20,"maty.kloub@gmail.com", options);
+        var result = DbAction.isPaymentPossible("EUR",10,"maty.kloub@gmail.com", options);
 
         Assert.IsTrue(result);
     }
@@ -254,7 +254,7 @@ public class Tests
     public void doPaymentOdchoziTest()
     {
         var options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=testDatabase.db").Options;
-        var result = DbAction.doPayment("EUR", 20, "maty.kloub@gmail.com", "odchozi", options);
+        var result = DbAction.doPayment("EUR", 10, "maty.kloub@gmail.com", "odchozi", options);
 
         Assert.IsTrue(result);
     }
@@ -284,6 +284,24 @@ public class Tests
         var result = DbAction.doPayment("CZK", 100000000, "muginari@seznam.cz", "odchozi", options);
 
         Assert.IsFalse(result);
+    }
+
+    [Test]
+    public void doPaymentKontokorent()
+    {
+        var options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=testDatabase.db").Options;
+        var result = DbAction.doPayment("CZK", 1040, "maty.kloub@gmail.com", "odchozi", options);
+
+        Assert.IsTrue(result);
+    }
+
+    [Test]
+    public void doPaymentKontokorentCiziMena()
+    {
+        var options = new DbContextOptionsBuilder<MyDbContext>().UseSqlite("Data Source=testDatabase.db").Options;
+        var result = DbAction.doPayment("EUR", 40, "maty.kloub@gmail.com", "odchozi", options);
+
+        Assert.IsTrue(result);
     }
 
     [Test]
