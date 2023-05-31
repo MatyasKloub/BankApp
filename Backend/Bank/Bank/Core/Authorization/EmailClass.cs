@@ -9,7 +9,7 @@ namespace Bank.Core.Authorization
 
         public void setClass()
         {
-            string filePath = "email.txt";
+            string filePath = "./email.txt";
             string[] lines = File.ReadAllLines(filePath);
 
             this.email = lines[0];
