@@ -273,7 +273,7 @@ namespace Bank.Core.Authorization
                 if (item.Mena == zkratka)
                 {
                     
-                    if (float.Parse(item.Count) >= value)
+                    if ((float.Parse(item.Count)*1.1f) >= value)
                     {
                         return true;
                     }    
@@ -286,7 +286,7 @@ namespace Bank.Core.Authorization
             }
             Kurz kurz = GetKurz(zkratka);
 
-            float hodnota_korun = float.Parse(ucet.Count);
+            float hodnota_korun = float.Parse(ucet.Count) * 1.1f;
 
             // CZK
             if (kurz == null && zkratka == "CZK")
