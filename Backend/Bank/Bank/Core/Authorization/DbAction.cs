@@ -422,7 +422,7 @@ namespace Bank.Core.Authorization
                         if (uc != null)
                         {
                             float fin = hodnota_korun - hodnota_v_korunach ?? 0.00f;
-                            if (fin < 0) { fin = fin * 1.1f; }
+                            if (fin < 0) { fin = fin * 1.1f; Console.WriteLine(fin + "value!"); }
                             float zaokrouhleno = (float)Math.Round(fin, 2);
                             uc.Count = zaokrouhleno.ToString();
 

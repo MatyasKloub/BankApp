@@ -22,6 +22,4 @@ COPY --from=publish /app/publish .
 
 COPY Bank/email.txt /app/email.txt
 
-COPY Bank/kurz.txt /app/kurz.txt
-
 ENTRYPOINT ["dotnet", "Bank.dll"]
