@@ -7,13 +7,20 @@ namespace Bank.Core.Authorization
         public string? email { get; set; }
         public string? password { get; set; }
 
-        public EmailClass()
-        {
-
-        }
 
         public void setClass()
         {
+            string folderPath = AppContext.BaseDirectory;
+            string[] files = Directory.GetFiles(folderPath);
+
+            Console.WriteLine("Files in folder:");
+            foreach (string file in files)
+            {
+                Console.WriteLine(file);
+            }
+
+
+
             //string filePath = "./email.txt";
             string filePath = Path.Combine(AppContext.BaseDirectory, "email.txt");
             string[] lines = File.ReadAllLines(filePath);
