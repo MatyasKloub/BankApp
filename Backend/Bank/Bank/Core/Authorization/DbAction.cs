@@ -387,6 +387,7 @@ namespace Bank.Core.Authorization
                                         // Update the email property
                                         float hodnota = float.Parse(item.Count);
                                         float finalVal = hodnota - value;
+                                        if (finalVal < 0) { finalVal = finalVal * 1.1f; }
                                         float finalfinalVal = (float)Math.Round(finalVal, 2);
                                         uc.Count = finalfinalVal.ToString();
                                         
@@ -421,6 +422,7 @@ namespace Bank.Core.Authorization
                         if (uc != null)
                         {
                             float fin = hodnota_korun - hodnota_v_korunach ?? 0.00f;
+                            if (fin < 0) { fin = fin * 1.1f; }
                             float zaokrouhleno = (float)Math.Round(fin, 2);
                             uc.Count = zaokrouhleno.ToString();
 
