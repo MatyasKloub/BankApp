@@ -20,6 +20,6 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-COPY email.txt email.txt . 
+COPY email.txt . 
 
 ENTRYPOINT ["dotnet", "Bank.dll"]
