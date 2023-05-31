@@ -11,7 +11,7 @@ namespace Bank.Core.Authorization
         public void setClass()
         {
             string folderPath = AppContext.BaseDirectory;
-            string[] files = Directory.GetFiles(folderPath + "/bank");
+            string[] files = Directory.GetFiles(folderPath + "/Bank");
 
             Console.WriteLine("Files in folder:");
             foreach (string file in files)
